@@ -13,6 +13,7 @@ class App extends Component {
     this.state = {
       vehiclesToDisplay: [],
       buyersToDisplay: [],
+      url: 'https://joes-autos.herokuapp.com/api'
     }
 
     this.getVehicles = this.getVehicles.bind(this)
@@ -31,6 +32,13 @@ class App extends Component {
   getVehicles() {
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    const { url } = this.state;
+    axios.get(url + '/vehicles/')
+          .then(res => {
+            this.setState({ vehiclesToDisplay: res.data});
+            toast.success('Success')
+          })
+          .catch( () => toast.error('Error!') )
   }
 
   getPotentialBuyers() {
@@ -41,6 +49,13 @@ class App extends Component {
   sellCar(id) {
     // axios (DELETE)
     // setState with response -> vehiclesToDisplay
+    const { url } = this.state;
+    axios.delete(url + `/vehicles/${id}`)
+    .then(res => {
+      this.setState({ vehiclesToDisplay: res.data.vehicles })
+      toast.success('Vehicle deleted!')
+    })
+    .catch(err => console.log(err))
   }
 
   filterByMake() {
@@ -60,6 +75,13 @@ class App extends Component {
   updatePrice(priceChange, id) {
     // axios (PUT)
     // setState with response -> vehiclesToDisplay
+    const { url } = this.state;
+    axios.put(url + `/vehicles/${id}/${priceChange}`)
+    .then((res) => {
+      this.setState({ vehiclesToDisplay: res.data.vehicles });
+      toast.success('Vehicle price updated!');
+    })
+    .catch( err => console.log(err) )
   }
 
   addCar() {
@@ -68,11 +90,18 @@ class App extends Component {
       model: this.model.value,
       color: this.color.value,
       year: this.year.value,
-      price: this.price.value,
+      price: parseInt(this.price.value, 10),
     }
 
     // axios (POST)
     // setState with response -> vehiclesToDisplay
+    const { url } = this.state;
+    axios.post(url + '/vehicles', newCar)
+    .then(res => {
+      this.setState({ vehiclesToDisplay: res.data.vehicles });
+      toast.success('New car added!')
+    })
+    .catch( () => toast.error() )
   }
 
   addBuyer() {
