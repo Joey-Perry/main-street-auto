@@ -44,6 +44,16 @@ class App extends Component {
   getPotentialBuyers() {
     // axios (GET)
     // setState with response -> buyersToDisplay
+    const { url } = this.state;
+    axios.get(url + '/buyers')
+      .then(res => {
+        this.setState({ buyersToDisplay: res.data })
+        toast.success('Success!');
+      })
+      .catch(err => {
+        console.log(err);
+        toast.error('Error!')
+      })
   }
 
   sellCar(id) {
@@ -60,16 +70,36 @@ class App extends Component {
 
   filterByMake() {
     let make = this.selectedMake.value
-
+    const { url } = this.state;
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    axios.get(url + `/vehicles?make=${make}`)
+      .then(res => {
+        // console.log(res.data);
+        this.setState({ vehiclesToDisplay: res.data });
+        toast.success('Success!')
+      })
+      .catch(err => {
+        console.log(err);
+        toast.error('Error!')
+      })
   }
 
   filterByColor() {
     let color = this.selectedColor.value
-
+    const { url } = this.state;
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    axios.get(url + `/vehicles?color=${color}`)
+    .then(res => {
+      // console.log(res.data);
+      this.setState({ vehiclesToDisplay: res.data });
+      toast.success('Success!')
+    })
+    .catch(err => {
+      console.log(err);
+      toast.error('Error!')
+    })
   }
 
   updatePrice(priceChange, id) {
@@ -113,17 +143,52 @@ class App extends Component {
 
     //axios (POST)
     // setState with response -> buyersToDisplay
+    const { url } = this.state;
+    axios.post((url + '/buyers'), newBuyer)
+      .then(({data}) => {
+        // console.log(data.buyers);
+        this.setState({ buyersToDisplay: data.buyers });
+        toast.success('Success!');
+      })
+      .catch(err => {
+        console.log(err);
+        toast.error('Error!');
+      })
   }
 
   deleteBuyer(id) {
     // axios (DELETE)
     //setState with response -> buyersToDisplay
+    const { url } = this.state;
+    axios.delete(url + `/buyers/${id}`)
+      .then(({data} )=> {
+        this.setState({ buyersToDisplay: data.buyers });
+        // console.log(data.buyers);
+        toast.success('Success!')
+      })
+      .catch(err => {
+        console.log(err);
+        toast.error('Error!');
+      })
   }
 
   nameSearch() {
     let searchLetters = this.searchLetters.value
+    
     // axios (GET)
     // setState with response -> buyersToDisplay
+    const { url } = this.state;
+    // give me back names that include the letters in search
+    axios.get(url + `/buyers?name=${searchLetters}`)
+      .then(({data}) => {
+        // console.log(data);
+        this.setState({ buyersToDisplay: data });
+        toast.success('Success!');
+      })
+      .catch(err => {
+        console.log(err);
+        toast.error('Error!');
+      })
   }
 
   byYear() {
@@ -131,6 +196,17 @@ class App extends Component {
 
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    const { url } = this.state;
+    axios.get(url + '/vehicles?year=' + year)
+      .then(({data}) => {
+        // console.log(data);
+        this.setState({ vehiclesToDisplay: data });
+        toast.success('Success!');
+      })
+      .catch(err => {
+        toast.error('Error!');
+        console.log(err);
+      })
   }
 
   // Do not edit the code below
